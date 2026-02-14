@@ -1,1 +1,8 @@
-console.log('it worked');
+import * as DeclarationMerging from './declaration-merging.js';
+
+if(DeclarationMerging) {}
+
+// DeclarationMerging.testInterfaces();
+// DeclarationMerging.testInterfaceClass();
+// DeclarationMerging.testClassNamespace();
+// DeclarationMerging.testPrototype();

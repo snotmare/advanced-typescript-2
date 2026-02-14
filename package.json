@@ -3,10 +3,12 @@
 	"version": "1.0.0",
 	"description": "",
 	"main": "dist/index.js",
-	"types": "dist/index.module.d.ts",	"scripts": {
+	"type": "module",
+	"types": "dist/index.module.d.ts",
+	"scripts": {
 		"init": "npm i",
 		"lint": "eslint . --ext .ts",
-		"start": "nodemon src/index.ts",
+		"start": "npx tsx watch src/index.ts",
 		"watch": "tsc --watch"
 	},
 	"author": "",
@@ -17,8 +19,8 @@
 		"eslint": "8.57.1",
 		"eslint-plugin-security": "1.7.1",
 		"eslint-plugin-unused-imports": "2.0.0",
-		"nodemon": "3.1.10",
 		"ts-node": "10.9.2",
+		"tsx": "^4.21.0",
 		"typescript": "^5.9.3"
 	}
 }
