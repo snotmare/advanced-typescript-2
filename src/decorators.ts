@@ -1,16 +1,11 @@
 import 'reflect-metadata';
+import type { Constructor } from './utils/constructor.js';
 
 //#region Function Decorators
 function taboo(word: string) {
 	//Executed at compile time when the decorator is used
 	return (target: unknown, propertyKey: string, descriptor: PropertyDescriptor) => {
 		//Executed at compile time when the decorated function is declared
-
-		//For experimenting with
-		// console.log(target);
-		// console.log(propertyKey);
-		// console.log(descriptor);
-
 		let originalFunction = descriptor.value;
 
 		descriptor.value = (...args: unknown[]) => {
@@ -24,7 +19,7 @@ function taboo(word: string) {
 					});
 			}
 
-			return originalFunction.apply(null, args);
+			return originalFunction.apply(target, args);
 		};
 	};
 }
@@ -47,26 +42,16 @@ export function testFunctionDecorator() {
 
 //#region Parameter Decorators
 function fideliusCharm(target: Object, propertyKey: string | symbol, parameterIndex: number) {
+	//Warning! Metadata is experimental. You must enable in tsconfig.json
 	let existingCharms: number[] = Reflect.getOwnMetadata(fideliusCharm, target, propertyKey) || [];
 	existingCharms.push(parameterIndex);
 	Reflect.defineMetadata(fideliusCharm, existingCharms, target, propertyKey);
-	
-	//For experimenting with
-	// console.log(target);
-	// console.log(propertyKey);
-	// console.log(parameterIndex);
 }
 
 function taboo2(word: string) {
 	//Executed at compile time when the decorator is used
 	return (target: Object, propertyKey: string, descriptor: PropertyDescriptor) => {
 		//Executed at compile time when the decorated function is declared
-
-		//For experimenting with
-		// console.log(target);
-		// console.log(propertyKey);
-		// console.log(descriptor);
-
 		let originalFunction = descriptor.value;
 
 		descriptor.value = (...args: unknown[]) => {
@@ -82,7 +67,7 @@ function taboo2(word: string) {
 					});
 			}
 
-			return originalFunction.apply(null, args);
+			return originalFunction.apply(target, args);
 		};
 	};
 }
@@ -102,54 +87,121 @@ export function testParameterDecorator() {
 //#endregion
 
 
+
 //#region Class Decorators
 
-type Constructor = {new(...args: any[]): {}};
-
-function classDecorator<T extends Constructor>(constructor: T) {
-	console.log(constructor);
-
-	// constructor.prototype.constructor = (...args: any[]) => {
-	// 	let instance = new (<Constructor<unknown>>constructor)(...args);
-	// 	console.log('instance created');
-
-	// 	return instance;
-	// };
-
-	// new constructor();
-
+function classDecorator<T extends Constructor<ParentClass>>(constructor: T) {
 	return class extends constructor {
 		constructor(...args: any[]) {
 			super(...args);
-			console.log('test');''
+			console.log('decorator class: constructor');
 		}
 
 		testFunction() {
-			console.log('it worked');
+			console.log('decorator class: test function');
+		}
+
+		foo() {
+			super.foo();
+			console.log('decorator class: foo');
 		}
 	};
 }
 
-@classDecorator
-class Foo {
-	test: string = '';
+
+// @classDecorator
+class ParentClass {
+	test = '';
 
 	constructor() {
-		console.log('new foo');
+		console.log('parent class: constructor');
 	}
 
-	foo() {}
+	foo() {
+		console.log('parent class: foo');
+	}
 }
 
-class Foo2 extends Foo {
+@classDecorator
+class ChildClass extends ParentClass {
 	constructor() {
 		super();
-		console.log('extends');
+		console.log('child class: constructor');
+	}
+
+	foo() {
+		super.foo();
+		console.log('child class: foo');
 	}
 }
 
 export function testConstructorDecorator() {
-	let foo = new Foo2();
-	foo.testFunction();
+	let foo = new ChildClass();
+	// foo.testFunction(); // Works at runtime, but compiler doesn't know about it
+	foo.foo();
 }
+//#endregion
+
+
+
+
+//#region Sql Generator
+class SqlGenerator {
+	static readonly FIELD_SYMBOL = Symbol('sqlField');
+
+	toSelect(object: Object): string {
+		let entityName = Reflect.getMetadata('test', object.constructor);
+
+		let selectFields = Object.keys(object)
+			.map(key => {
+				return Reflect.getMetadata(SqlGenerator.FIELD_SYMBOL, object, key);
+			});
+
+		let whereStatements = Object.keys(object)
+			.map(key => <keyof object>key)
+			.filter(key => object[<keyof object>key])
+			.map(key => {
+				let attributeName = Reflect.getMetadata(SqlGenerator.FIELD_SYMBOL, object, key);
+				return `${attributeName} = ?`;
+			});
+		
+		return `select ${selectFields.join(', ')} ` +
+			`\nfrom ${entityName} ` +
+			`\nwhere ${whereStatements.join(' and ')}`;
+	}
+}
+
+function entity(name: string) {
+	return (target: Constructor<unknown>) => {
+		Reflect.defineMetadata('test', name, target);
+	};
+}
+
+function attribute(name: string) {
+	return Reflect.metadata(SqlGenerator.FIELD_SYMBOL, name);
+}
+
+@entity('playerTable')
+class Player {
+	@attribute('recordId')
+	id?: number;
+
+	@attribute('teamName')
+	team?: string;
+
+	@attribute('playerName')
+	name?: string;
+}
+
+
+export function testSqlGenerator() {
+	let player = new Player();
+	player.id = 1;
+	player.team = 'Gryffindor';
+	player.name = 'Harry Potter';
+
+	let sql = new SqlGenerator().toSelect(player);
+	console.log(sql);
+}
+
 //#endregion
