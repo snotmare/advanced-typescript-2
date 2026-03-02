@@ -24,6 +24,7 @@ export function testOverloadNone() {
 
 //#region Overload Type
 
+//Conditional type so we get back the correct type instead of a literal (string | number instead of 10 or '20')
 type Amount<V extends string | number> = V extends string ? string : number;
 
 function addPoints2<T extends string | number>(house: House, amount: T): Amount<T> {
@@ -45,7 +46,7 @@ export function testOverloadType() {
 
 
 
-//#region Overload Types
+//#region Overload Function
 
 function addPoints3(house: House, amount: string): string;
 function addPoints3(house: House, amount: number): number;
@@ -67,23 +68,23 @@ export function testOverloadFunction() {
 //#endregion
 
 
-//#region Overload Types
+//#region Overload Type Complex
 
-interface PointOptions {
+interface PointOptions1 {
 	house: House;
 	amount: string | number;
 }
 
-type PointResult<T extends PointOptions, K extends keyof T> = T[K] extends string ? string : number;
+type PointResult<T extends PointOptions1> = T['amount'] extends string ? string : number;
 
-function addPoints4<T extends PointOptions>(options: T): PointResult<T, 'amount'> {
+function addPoints4<T extends PointOptions1>(options: T): PointResult<T> {
 	let numberAmount = typeof options.amount === 'string' ? parseInt(options.amount, 10) : options.amount;
 	let newAmount = (points.get(options.house) ?? 0) + numberAmount;
 	points.set(options.house, newAmount);
-	return <PointResult<T, 'amount'>>(typeof options.amount === 'string' ? `${newAmount}` : newAmount);
+	return <PointResult<T>>(typeof options.amount === 'string' ? `${newAmount}` : newAmount);
 }
 
-export function testOverloadComplex() {
+export function testOverloadTypeComplex() {
 	let totalNumber = addPoints4({house: 'Gryffindor', amount: 10});
 	console.log(totalNumber);
 
@@ -94,6 +95,56 @@ export function testOverloadComplex() {
 //#endregion
 
 
-//TODO Come up with another overload option??
-// function addPoints4(options: { house: House; amount: number }): number;
-// function addPoints4(options: { house: House; amount: string }): string;
+
+//#region Overload Function Complex
+interface PointOptions2<T extends string | number> {
+	house: House;
+	amount: T;
+}
+
+function addPoints5(options: PointOptions2<number>): number;
+function addPoints5(options: PointOptions2<string>): string;
+function addPoints5<T extends string | number>(options: PointOptions2<T>): string | number {
+	let numberAmount = typeof options.amount === 'string' ? parseInt(options.amount, 10) : <number>options.amount;
+	let newAmount = (points.get(options.house) ?? 0) + numberAmount;
+	points.set(options.house, newAmount);
+	return typeof options.amount === 'string' ? `${newAmount}` : newAmount;
+}
+
+export function testOverloadFunctionComplex() {
+	let totalNumber = addPoints5({house: 'Gryffindor', amount: 10});
+	console.log(totalNumber);
+
+	let totalString = addPoints5({house: 'Gryffindor', amount: '20'});
+	console.log(totalString);
+}
+//#endregion
+
+
+
+//#region Overload Type Complex with a Function
+
+interface PointOptions3 {
+	house: House;
+	amount: () => string | number;
+}
+
+type PointResult3<T extends PointOptions3> = ReturnType<T['amount']> extends string ? string : number;
+
+function addPoints6<T extends PointOptions3>(options: T): PointResult3<T> {
+	let suppliedAmount = options.amount();
+	let numberAmount = typeof suppliedAmount === 'string' ? parseInt(suppliedAmount, 10) : suppliedAmount;
+	let newAmount = (points.get(options.house) ?? 0) + numberAmount;
+	points.set(options.house, newAmount);
+	return <PointResult3<T>>(typeof suppliedAmount === 'string' ? `${newAmount}` : newAmount);
+}
+
+export function testOverloadTypeComplexFunction() {
+	let totalNumber = addPoints6({house: 'Gryffindor', amount: () => 10});
+	console.log(totalNumber);
+
+	let totalString = addPoints6({house: 'Gryffindor', amount: () => '20'});
+	console.log(totalString);
+}
+
+//#endregion

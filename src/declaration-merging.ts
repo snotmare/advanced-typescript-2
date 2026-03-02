@@ -1,4 +1,3 @@
-
 //#region interface + interface
 interface Wizard {
 	name: string;
@@ -16,10 +15,13 @@ export function testInterfaces() {
 
 	console.log(harry);
 }
+
 //#endregion
 
 
+
 //#region interface + class
+
 interface House {
 	name: string;
 }
@@ -45,7 +47,9 @@ export function testInterfaceClass() {
 	gryffindor.name = 'Gryffindor';
 	gryffindor.setPassword('Balderdash');
 }
+
 //#endregion
+
 
 
 //#region class + namespace
@@ -69,7 +73,9 @@ export function testClassNamespace() {
 //#endregion
 
 
+
 //#region prototype
+
 declare global {
 	interface String {
 		equalsIgnoreCase(anotherString: string): boolean;
@@ -84,4 +90,5 @@ export function testPrototype() {
 	let bookTitle = 'Harry Potter';
 	console.log(bookTitle.equalsIgnoreCase('harry potter')); //Returns true
 }
+
 //#endregion
