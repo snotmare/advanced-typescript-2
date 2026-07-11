@@ -150,7 +150,7 @@ class SqlGenerator {
 	static readonly FIELD_SYMBOL = Symbol('sqlField');
 
 	toSelect(object: Object): string {
-		let entityName = Reflect.getMetadata('test', object.constructor);
+		let entityName = Reflect.getMetadata('sql-generator-class', object.constructor);
 
 		let selectFields = Object.keys(object)
 			.map(key => {
@@ -173,7 +173,7 @@ class SqlGenerator {
 
 function entity(name: string) {
 	return (target: Constructor<unknown>) => {
-		Reflect.defineMetadata('test', name, target);
+		Reflect.defineMetadata('sql-generator-class', name, target);
 	};
 }
 

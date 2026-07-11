@@ -18,15 +18,14 @@ if(DeclarationMerging || Decorators || FunctionOverloading || TemplateStrings) {
 // FunctionOverloading.testOverloadTypeComplexFunction();
 
 // TemplateStrings.testBasic();
-// TemplateStrings.testTagged();
-// TemplateStrings.testLiteralTypes();
 // TemplateStrings.testBuiltInTypes();
-// TemplateStrings.testTemplateInferance();
+// TemplateStrings.testLiteralTypes();
 // TemplateStrings.testTemplateParameters();
+// TemplateStrings.testTagged();
 
 // Decorators.testFunctionDecorator();
 // Decorators.testParameterDecorator();
 // Decorators.testConstructorDecorator();
-// Decorators.testSqlGenerator();
+Decorators.testSqlGenerator();
 
 console.log('The demo is ready to go!');

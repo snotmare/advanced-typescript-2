@@ -11,10 +11,10 @@ function addPoints1(house: House, amount: string | number): string | number {
 }
 
 export function testOverloadNone() {
-	let totalNumber = addPoints1('Gryffindor', 10);
+	let totalNumber = addPoints1('Gryffindor', 10); //Returns string | number
 	console.log(totalNumber);
 
-	let totalString = addPoints1('Gryffindor', '20');
+	let totalString = addPoints1('Gryffindor', '20'); //Returns string | number
 	console.log(totalString);
 }
 
@@ -35,10 +35,10 @@ function addPoints2<T extends string | number>(house: House, amount: T): Amount<
 }
 
 export function testOverloadType() {
-	let totalNumber = addPoints2('Gryffindor', 10);
+	let totalNumber = addPoints2('Gryffindor', 10); //Returns number
 	console.log(totalNumber);
 
-	let totalString = addPoints2('Gryffindor', '20');
+	let totalString = addPoints2('Gryffindor', '20'); //Returns string
 	console.log(totalString);
 }
 
@@ -58,10 +58,10 @@ function addPoints3<T extends string | number>(house: House, amount?: T): T {
 }
 
 export function testOverloadFunction() {
-	let totalNumber = addPoints3('Gryffindor', 10);
+	let totalNumber = addPoints3('Gryffindor', 10); //Returns number
 	console.log(totalNumber);
 
-	let totalString = addPoints3('Gryffindor', '20');
+	let totalString = addPoints3('Gryffindor', '20'); //Returns string
 	console.log(totalString);
 }
 
@@ -85,10 +85,10 @@ function addPoints4<T extends PointOptions1>(options: T): PointResult<T> {
 }
 
 export function testOverloadTypeComplex() {
-	let totalNumber = addPoints4({house: 'Gryffindor', amount: 10});
+	let totalNumber = addPoints4({house: 'Gryffindor', amount: 10}); //Returns number
 	console.log(totalNumber);
 
-	let totalString = addPoints4({house: 'Gryffindor', amount: '20'});
+	let totalString = addPoints4({house: 'Gryffindor', amount: '20'}); //Returns string
 	console.log(totalString);
 }
 
@@ -112,10 +112,10 @@ function addPoints5<T extends string | number>(options: PointOptions2<T>): strin
 }
 
 export function testOverloadFunctionComplex() {
-	let totalNumber = addPoints5({house: 'Gryffindor', amount: 10});
+	let totalNumber = addPoints5({house: 'Gryffindor', amount: 10}); //Returns number
 	console.log(totalNumber);
 
-	let totalString = addPoints5({house: 'Gryffindor', amount: '20'});
+	let totalString = addPoints5({house: 'Gryffindor', amount: '20'}); //Returns string
 	console.log(totalString);
 }
 //#endregion
@@ -140,10 +140,10 @@ function addPoints6<T extends PointOptions3>(options: T): PointResult3<T> {
 }
 
 export function testOverloadTypeComplexFunction() {
-	let totalNumber = addPoints6({house: 'Gryffindor', amount: () => 10});
+	let totalNumber = addPoints6({house: 'Gryffindor', amount: () => 10}); //Returns number
 	console.log(totalNumber);
 
-	let totalString = addPoints6({house: 'Gryffindor', amount: () => '20'});
+	let totalString = addPoints6({house: 'Gryffindor', amount: () => '20'}); //Returns string
 	console.log(totalString);
 }
 

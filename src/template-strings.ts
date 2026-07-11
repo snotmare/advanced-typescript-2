@@ -9,54 +9,6 @@ export function testBasic() {
 
 
 
-//#region Tagged
-
-interface Student {
-	name: string;
-	age: Date;
-}
-
-function greetingTemplate(strings: TemplateStringsArray, ...keys: (keyof Student)[]): (user: Student) => string {
-	return (user: Student) => {
-		let result = [strings[0]];
-
-		keys.forEach((key, i) => {
-			let value = user[key];
-			result.push(`${value}`, strings[i + 1]);
-		});
-
-		let today = new Date();
-
-		//Dynamically change the template output
-		if(user.age.getMonth() === today.getMonth() && user.age.getDate() === today.getDate()) {
-			result.push(` Happy birtday, have a cake.`);
-		}
-
-		return result.join('');
-	};
-}
-
-export function testTagged() {
-	//Reuse the same template tag
-	let myTemplate = greetingTemplate`Hello ${'name'}! ${'name'} is a very nice name.`;
-	
-	let harry: Student = {
-		name: 'Harry Potter',
-		age: new Date()
-	};
-
-	let ron: Student = {
-		name: 'Ron Weasley',
-		age: new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 2) // 2 days ago
-	};
-
-	console.log(myTemplate(harry));
-	console.log(myTemplate(ron));
-}
-
-//#endregion
-
-
 
 //#region Built-in Types
 
@@ -121,6 +73,55 @@ export function testTemplateParameters() {
 	console.log(getSpacing('padding', '50%'));
 
 	// console.log(getSpacing('padding-top', '4px', '2px', 4, 'auto')); //Won't work
+}
+
+//#endregion
+
+
+
+//#region Tagged
+
+interface Student {
+	name: string;
+	age: Date;
+}
+
+function greetingTemplate(strings: TemplateStringsArray, ...keys: (keyof Student)[]): (student: Student) => string {
+	return (student: Student) => {
+		let result = [strings[0]];
+
+		keys.forEach((key, i) => {
+			let value = student[key];
+			result.push(`${value}`, strings[i + 1]);
+		});
+
+		let today = new Date();
+
+		//Dynamically change the template output
+		if(student.age.getMonth() === today.getMonth() && student.age.getDate() === today.getDate()) {
+			result.push(` Happy birtday, have a cake.`);
+		}
+
+		return result.join('');
+	};
+}
+
+export function testTagged() {
+	//Reuse the same template tag
+	let myTemplate = greetingTemplate`Hello ${'name'}! ${'name'} is a very nice name.`;
+	
+	let harry: Student = {
+		name: 'Harry Potter',
+		age: new Date()
+	};
+
+	let ron: Student = {
+		name: 'Ron Weasley',
+		age: new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 2) // 2 days ago
+	};
+
+	console.log(myTemplate(harry));
+	console.log(myTemplate(ron));
 }
 
 //#endregion
