@@ -26,6 +26,6 @@ if(DeclarationMerging || Decorators || FunctionOverloading || TemplateStrings) {
 // Decorators.testFunctionDecorator();
 // Decorators.testParameterDecorator();
 // Decorators.testConstructorDecorator();
-Decorators.testSqlGenerator();
+// Decorators.testSqlGenerator();
 
 console.log('The demo is ready to go!');
