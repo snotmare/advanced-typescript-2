@@ -83,7 +83,7 @@ export function testTemplateParameters() {
 
 interface Student {
 	name: string;
-	age: Date;
+	birthdate: Date;
 }
 
 function greetingTemplate(strings: TemplateStringsArray, ...keys: (keyof Student)[]): (student: Student) => string {
@@ -98,7 +98,7 @@ function greetingTemplate(strings: TemplateStringsArray, ...keys: (keyof Student
 		let today = new Date();
 
 		//Dynamically change the template output
-		if(student.age.getMonth() === today.getMonth() && student.age.getDate() === today.getDate()) {
+		if(student.birthdate.getMonth() === today.getMonth() && student.birthdate.getDate() === today.getDate()) {
 			result.push(` Happy birtday, have a cake.`);
 		}
 
@@ -112,12 +112,12 @@ export function testTagged() {
 	
 	let harry: Student = {
 		name: 'Harry Potter',
-		age: new Date()
+		birthdate: new Date()
 	};
 
 	let ron: Student = {
 		name: 'Ron Weasley',
-		age: new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 2) // 2 days ago
+		birthdate: new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 2) // 2 days ago
 	};
 
 	console.log(myTemplate(harry));
