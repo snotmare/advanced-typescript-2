@@ -25,7 +25,7 @@ export function testOverloadNone() {
 //#region Overload Type
 
 //Conditional type so we get back the correct type instead of a literal (string | number instead of 10 or '20')
-type Amount<V extends string | number> = V extends string ? string : number;
+type Amount<T extends string | number> = T extends string ? string : number;
 
 function addPoints2<T extends string | number>(house: House, amount: T): Amount<T> {
 	let numberAmount = typeof amount === 'string' ? parseInt(amount, 10) : <number>amount;
